@@ -1,0 +1,101 @@
+@base = http://localhost:5080
+@token = COLE_O_ACCESS_TOKEN_DO_LOGIN
+@categoriaId = 1
+@publicacaoId = 1
+
+### cadastrar (use dados fictícios)
+POST {{base}}/api/auth/cadastro
+Content-Type: application/json
+
+{"nome":"Ana Teste","email":"ana@example.com","senha":"SenhaTeste123!"}
+
+### login
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{"email":"ana@example.com","senha":"SenhaTeste123!"}
+
+### própria conta
+GET {{base}}/api/usuarios/me
+Authorization: Bearer {{token}}
+
+### atualizar conta
+PUT {{base}}/api/usuarios/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"nome":"Ana Atualizada","email":"ana@example.com"}
+
+### criar categoria; copie o id retornado para categoriaId
+POST {{base}}/api/categorias
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"nome":"Infraestrutura","descricao":"Problemas do bairro","tipo":"Problema"}
+
+### listar categorias sem login
+GET {{base}}/api/categorias
+
+### consultar categoria
+GET {{base}}/api/categorias/{{categoriaId}}
+
+### editar categoria
+PUT {{base}}/api/categorias/{{categoriaId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"nome":"Infraestrutura urbana","descricao":"Problemas nas ruas e calçadas","tipo":"Problema"}
+
+### criar publicação anônima; copie id para publicacaoId
+POST {{base}}/api/publicacoes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"titulo":"Buraco perto da praça","descricao":"Buraco na passagem de pedestres.","endereco":"Rua das Flores, 100, Centro, São Paulo/SP","pontoReferencia":"Ao lado da praça","categoriaId":{{categoriaId}},"anonima":true}
+
+### consultar sem login e conferir anonimato
+GET {{base}}/api/publicacoes/{{publicacaoId}}
+
+### listar com filtros
+GET {{base}}/api/publicacoes?tipo=Problema&situacao=Aberto
+
+### minhas publicações
+GET {{base}}/api/publicacoes/minhas
+Authorization: Bearer {{token}}
+
+### editar sem alterar autoria
+PUT {{base}}/api/publicacoes/{{publicacaoId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"titulo":"Buraco na esquina da praça","descricao":"Registro atualizado pelo autor.","endereco":"Rua das Flores, 100, Centro, São Paulo/SP","categoriaId":{{categoriaId}},"anonima":true}
+
+### resolver problema
+PUT {{base}}/api/publicacoes/{{publicacaoId}}/resolucao
+Authorization: Bearer {{token}}
+
+### validar 400
+POST {{base}}/api/publicacoes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"titulo":"Teste inválido","descricao":"Sem endereço","endereco":"","categoriaId":{{categoriaId}}}
+
+### validar 404
+GET {{base}}/api/publicacoes/2147483647
+
+### excluir categoria em uso: esperado 409
+DELETE {{base}}/api/categorias/{{categoriaId}}
+Authorization: Bearer {{token}}
+
+### excluir publicação: esperado 204
+DELETE {{base}}/api/publicacoes/{{publicacaoId}}
+Authorization: Bearer {{token}}
+
+### excluir categoria sem publicações: esperado 204
+DELETE {{base}}/api/categorias/{{categoriaId}}
+Authorization: Bearer {{token}}
+
+### excluir conta sem conteúdo: esperado 204
+DELETE {{base}}/api/usuarios/me
+Authorization: Bearer {{token}}
