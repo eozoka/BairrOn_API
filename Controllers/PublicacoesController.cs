@@ -213,28 +213,34 @@ public class PublicacoesController : ControllerBase
         publicacao.EncerramentoEm = dados.EncerramentoEm?.UtcDateTime;
     }
 
-    private object MontarResposta(Publicacao publicacao, DateTime agora)
+    private PublicacaoRespostaDto MontarResposta(Publicacao publicacao, DateTime agora)
     {
         var nomeAutor = publicacao.Autor.Nome;
         if (publicacao.Anonima)
             nomeAutor = "Anônimo";
 
         // não retorna o id, o e-mail ou a senha do autor
-        return new
+        return new PublicacaoRespostaDto
         {
-            publicacao.Id,
-            publicacao.Titulo,
-            publicacao.Descricao,
-            publicacao.Endereco,
-            publicacao.PontoReferencia,
-            categoria = new { publicacao.Categoria.Id, publicacao.Categoria.Nome, publicacao.Categoria.Descricao, publicacao.Categoria.Tipo },
-            publicacao.Anonima,
-            autor = nomeAutor,
-            situacao = publicacao.ObterSituacao(agora),
-            criadaEm = ComoUtc(publicacao.CriadaEm),
-            inicioEm = ComoUtc(publicacao.InicioEm),
-            encerramentoEm = ComoUtc(publicacao.EncerramentoEm),
-            resolvidaEm = ComoUtc(publicacao.ResolvidaEm)
+            Id = publicacao.Id,
+            Titulo = publicacao.Titulo,
+            Descricao = publicacao.Descricao,
+            Endereco = publicacao.Endereco,
+            PontoReferencia = publicacao.PontoReferencia,
+            Categoria = new CategoriaRespostaDto
+            {
+                Id = publicacao.Categoria.Id,
+                Nome = publicacao.Categoria.Nome,
+                Descricao = publicacao.Categoria.Descricao,
+                Tipo = publicacao.Categoria.Tipo
+            },
+            Anonima = publicacao.Anonima,
+            Autor = nomeAutor,
+            Situacao = publicacao.ObterSituacao(agora),
+            CriadaEm = ComoUtc(publicacao.CriadaEm),
+            InicioEm = ComoUtc(publicacao.InicioEm),
+            EncerramentoEm = ComoUtc(publicacao.EncerramentoEm),
+            ResolvidaEm = ComoUtc(publicacao.ResolvidaEm)
         };
     }
 

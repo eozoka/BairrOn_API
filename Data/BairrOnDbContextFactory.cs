@@ -13,7 +13,7 @@ public class BairrOnDbContextFactory : IDesignTimeDbContextFactory<BairrOnDbCont
             .AddEnvironmentVariables()
             .Build();
 
-        // a conexão de exemplo só permite gerar migrations, não acessar o banco real
+        // a conexão de exemplo so permite gerar migrations, nao acessar o banco real
         var conexao = config.GetConnectionString("BairrOnOracle")
             ?? "User Id=placeholder;Password=placeholder;Data Source=localhost/FREEPDB1";
 

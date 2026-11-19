@@ -8,14 +8,29 @@ Abra **BairrOn.slnx**. A solução tem somente o projeto da API.
 
 - `Controllers`: recebe as requisições, confere as regras e acessa o banco.
 - `Entities`: usuário, categoria e publicação.
-- `DTOs`: dados recebidos nos cadastros e nas alterações.
+- `DTOs`: dados recebidos nos cadastros e nas alterações, e classes que descrevem as respostas de publicações. Cada classe fica em seu próprio arquivo.
+- `Configuration`: configuração do login JWT e do tratamento de erros.
 - `Data`: conexão, tabelas e relacionamentos do Entity Framework.
 - `Migrations`: arquivos gerados para criar e atualizar as tabelas.
 - `Validation`: confere o fuso horário das datas recebidas.
 - `requests/BairrOn.http`: exemplos para testar as rotas.
-- `Program.cs`: configura Oracle, login e execução da API.
+- `Program.cs`: organiza a inicialização, configura Oracle e Swagger e chama as configurações de login e erros.
 
 O fluxo é: requisição → controller → DbContext → Oracle → resposta. Não há camada de serviços ou projeto de testes na solução. Os comentários importantes estão em minúsculas.
+
+## Por onde estudar o código
+
+1. `Entities`: entenda o que é um usuário, uma categoria e uma publicação.
+2. `DTOs`: veja quais campos entram na API e quais saem nas respostas.
+3. `Controllers/CategoriasController.cs`: acompanhe um CRUD completo, da rota até o banco.
+4. `Controllers/PublicacoesController.cs`: veja filtros, autoria, anonimato e datas.
+5. `Data/BairrOnDbContext.cs` e `Migrations`: veja como as classes viram tabelas e relacionamentos.
+6. `Controllers/AuthController.cs` e `Controllers/UsuariosController.cs`: acompanhe cadastro, login e a própria conta.
+7. `Program.cs` e `Configuration`: entenda como a aplicação liga essas partes.
+
+Para explicar uma requisição, use um exemplo: o `POST /api/categorias` recebe um `CategoriaDto`, o controller cria uma `Categoria`, o `DbContext` salva no Oracle e a API responde com 201. Categorias e publicações possuem as cinco operações de CRUD; usuários têm cadastro e gerenciamento da própria conta.
+
+O login continua usando JWT. As verificações de permissão permanecem nos controllers e o tratamento geral de erros fica em `Configuration/TratamentoErrosConfig.cs`.
 
 ## Tecnologias
 
